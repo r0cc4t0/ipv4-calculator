@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="index">
+    <form class="form_index" action="#" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <div class="buttons">
+            <button type="submit" value="submit" id="submit">Submit</button>
+            <button type="reset" value="reset" id="reset">Reset</button>
+        </div>
+    </form>
+</main>
+{% endblock %}
