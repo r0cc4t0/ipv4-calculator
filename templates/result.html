@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="result">
+    <div class="info">
+        <span><strong>Main Informations</strong></span>
+        <span>Decimal IP address: {{ ip }}</span>
+        <span>Chosen option: {{ opt }}</span>
+        <span>Requested quantity of {{ opt }}: {{ qtd }}</span>
+        <span>IP class: {{ classe }}</span>
+        <span>IP type: {{ tipo }}</span>
+        <span>Binary IP address: {{ ip_bin }}</span>
+        <span>Decimal default subnet mask: {{ mask_dec }}</span>
+        <span>Binary default subnet mask: {{ mask_bin }}</span>
+        <span>Decimal default wildcard mask: {{ wildcard_dec }}</span>
+        <span>Binary default wildcard mask: {{ wildcard_bin }}</span>
+        <span>Number of bits used for {{ opt }}: {{ bits }}</span>
+        <span>Valid number of {{ opt }} with {{ bits }} bits: {{ qtd_opt }}</span>
+        <span>Number of bits used for {{ opt_inv }}: {{ bits_inv }}</span>
+        <span>Valid number of {{ opt_inv }} with {{ bits_inv }} bits: {{ qtd_inv }}</span>
+        <span>Binary new subnet mask: {{ new_mask_bin }}</span>
+        <span>Decimal new subnet mask: {{ new_mask_dec }}</span>
+        <span>CIDR Notation: /{{ cidr }}</span>
+        <span>Binary new wildcard mask: {{ new_wildcard_bin }}</span>
+        <span>Decimal new wildcard mask: {{ new_wildcard_dec }}</span>
+        <span>Maximum subnets for class {{ classe }}: {{ effective_subredes }}</span>
+        <span>Maximum hosts per subnet for class {{ classe }}: {{ effective_hosts }}</span>
+        <div class="subnets">
+            <p>Subnets List</p>
+            <p>Click in Download button to download a PDF file with the subnets.</p><br>
+            {% for s in subnets %}
+            Subnet: {{ s.number }}<br>
+            Network address in decimal: {{ s.network_dec }}<br>
+            Network address in binary: {{ s.network_bin }}<br>
+            Broadcast address in decimal: {{ s.broadcast_dec }}<br>
+            Broadcast address in binary: {{ s.broadcast_bin }}<br>
+            <br>
+            {% endfor %}
+        </div>
+    </div>
+
+    <form class="form_result" action="#" method="POST">
+        {% csrf_token %}
+        <button type="submit" value="download" id="Download">Download</button>
+    </form>
+</main>
+{% endblock %}

@@ -2,7 +2,7 @@
 
 {% block content %}
 <main class="index">
-    <form class="form_index" action="#" method="POST">
+    <form class="form_index" action="{% url 'result' %}" method="POST">
         {% csrf_token %}
         {{ form }}
         <div class="buttons">
