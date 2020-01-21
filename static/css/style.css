@@ -93,3 +93,51 @@ button {
 button:hover {
     background-color: #0069da;
 }
+
+.result {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    margin: 25px 0;
+}
+
+.info {
+    min-width: 320px;
+    background-color: #e6e6e6;
+    border-bottom: 1px solid #000000;
+    margin-bottom: 25px;
+}
+
+.info:hover {
+    box-shadow: 0 0 3px 3px #b9d3ee;
+}
+
+span {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 10px 5px;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+}
+
+span:hover {
+    background-color: #b9d3ee;
+}
+
+p {
+    text-align: center;
+    padding: 5px 0;
+}
+
+.subnets {
+    overflow: auto;
+    height: 300px;
+    padding: 0 5px;
+    border-left: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+}
