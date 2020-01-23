@@ -149,6 +149,19 @@ def cidr_notation(mask):
     return cidr
 
 
+def new_bin_wildcard(new_bin_mask):
+    one = 0
+    zero = 0
+    for i in range(len(new_bin_mask)):
+        if new_bin_mask[i] == '1':
+            one += 1
+        elif new_bin_mask[i] == '0':
+            zero += 1
+    new_bin_wildcard = new_bin_mask.replace(
+        '0', '1', zero).replace('1', '0', one)
+    return new_bin_wildcard
+
+
 data = {}
 
 
@@ -184,5 +197,7 @@ def result(request):
         data['class'], data['opt'], data['qty'], data['bin_mask'])
     data['new_dec_mask'] = dec_octets(data['new_bin_mask'])
     data['cidr'] = cidr_notation(data['new_bin_mask'])
+    data['new_bin_wildcard'] = new_bin_wildcard(data['new_bin_mask'])
+    data['new_dec_wildcard'] = dec_octets(data['new_bin_wildcard'])
 
     return render(request, 'result.html', data)
