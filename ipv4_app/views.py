@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .forms import IndexForm
+from math import log, ceil
 
 # Create your views here.
 
@@ -83,11 +84,49 @@ def dec_mask(ip_class):
 def dec_wildcard(ip_class):
     if ip_class == 'A':
         dec_wildcard = '0.255.255.255'
-    if ip_class == 'B':
+    elif ip_class == 'B':
         dec_wildcard = '0.255.255.255'
-    if ip_class == 'C':
+    elif ip_class == 'C':
         dec_wildcard = '0.255.255.255'
     return dec_wildcard
+
+
+def bits_opt(opt, qty):
+    if opt == 'subnets':
+        aux = log(int(qty), 2)
+        bits_opt = int(ceil(aux))
+    elif opt == 'hosts':
+        aux = log((int(qty)+2), 2)
+        bits_opt = int(ceil(aux))
+    return bits_opt
+
+
+def bits_inv_opt(ip_class, opt, qty):
+    if ip_class == 'A':
+        bits_inv_opt = 24 - bits_opt(opt, qty)
+    elif ip_class == 'B':
+        bits_inv_opt = 16 - bits_opt(opt, qty)
+    elif ip_class == 'C':
+        bits_inv_opt = 8 - bits_opt(opt, qty)
+    return bits_inv_opt
+
+
+def qty_opt(opt, qty):
+    aux = pow(2, bits_opt(opt, qty))
+    if opt == 'subnets':
+        qty_opt = int(aux)
+    elif opt == 'hosts':
+        qty_opt = int(aux - 2)
+    return qty_opt
+
+
+def qty_inv_opt(ip_class, opt, inv_opt, qty):
+    aux = pow(2, bits_inv_opt(ip_class, opt, qty))
+    if inv_opt == 'subnets':
+        qty_inv_opt = int(aux)
+    elif inv_opt == 'hosts':
+        qty_inv_opt = int(aux - 2)
+    return qty_inv_opt
 
 
 data = {}
@@ -115,4 +154,12 @@ def result(request):
     data['bin_mask'] = bin_octets(data['dec_mask'])
     data['dec_wildcard'] = dec_wildcard(data['class'])
     data['bin_wildcard'] = bin_octets(data['dec_wildcard'])
+    data['bits_opt'] = bits_opt(data['opt'], data['qty'])
+    data['bits_inv_opt'] = bits_inv_opt(
+        data['class'], data['opt'], data['qty'])
+
+    data['qty_opt'] = qty_opt(data['opt'], data['qty'])
+    data['qty_inv_opt'] = qty_inv_opt(
+        data['class'], data['opt'], data['inv_opt'], data['qty'])
+
     return render(request, 'result.html', data)
