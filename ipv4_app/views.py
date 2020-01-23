@@ -129,6 +129,26 @@ def qty_inv_opt(ip_class, opt, inv_opt, qty):
     return qty_inv_opt
 
 
+def new_bin_mask(ip_class, opt, qty, bin_mask):
+    if opt == 'subnets':
+        bits = bits_opt(opt, qty)
+    elif opt == 'hosts':
+        bits = bits_inv_opt(ip_class, opt, qty)
+    new_bin_mask = bin_mask.replace('0', '1', bits)
+    return new_bin_mask
+
+
+def cidr_notation(mask):
+    cidr = 0
+    aux = mask.replace('.', '')
+    for i in range(len(aux)):
+        if aux[i] == '1':
+            cidr += 1
+        else:
+            break
+    return cidr
+
+
 data = {}
 
 
@@ -157,9 +177,12 @@ def result(request):
     data['bits_opt'] = bits_opt(data['opt'], data['qty'])
     data['bits_inv_opt'] = bits_inv_opt(
         data['class'], data['opt'], data['qty'])
-
     data['qty_opt'] = qty_opt(data['opt'], data['qty'])
     data['qty_inv_opt'] = qty_inv_opt(
         data['class'], data['opt'], data['inv_opt'], data['qty'])
+    data['new_bin_mask'] = new_bin_mask(
+        data['class'], data['opt'], data['qty'], data['bin_mask'])
+    data['new_dec_mask'] = dec_octets(data['new_bin_mask'])
+    data['cidr'] = cidr_notation(data['new_bin_mask'])
 
     return render(request, 'result.html', data)
