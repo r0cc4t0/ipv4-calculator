@@ -172,6 +172,69 @@ def effective_quantity(ip_class):
     return effective_quantity
 
 
+def calculate_subnets(ip, ip_class, cidr):
+    ip_octets = split_octets(ip)
+    aux = ''
+
+    if ip_class == 'A':
+        bits = int(cidr) - 8
+    elif ip_class == 'B':
+        bits = int(cidr) - 16
+    elif ip_class == 'C':
+        bits = int(cidr) - 24
+
+    aux = '1' * bits
+    bin_size = len(aux)
+    dec_size = int(aux, 2) + 1
+    network = []
+    broadcast = []
+    subnet_number = 1
+    subnets = []
+
+    for i in range(dec_size):
+        network.append(bin(i)[2:].rjust(bin_size, '0').ljust(8, '0'))
+        broadcast.append(bin(i)[2:].rjust(bin_size, '0').ljust(8, '1'))
+
+        if ip_class == 'A':
+            network[i] = network[i][:8] + '.' + \
+                network[i][8:16].ljust(8, '0') + '.' + \
+                network[i][16:].ljust(8, '0')
+            broadcast[i] = broadcast[i][:8] + '.' + \
+                broadcast[i][8:16].ljust(
+                    8, '1') + '.' + broadcast[i][16:].ljust(8, '1')
+            subnets.append({
+                'number': subnet_number,
+                'dec_network': dec_octets(ip_octets[0] + '.' + network[i]),
+                'bin_network': ip_octets[0] + '.' + network[i],
+                'dec_broadcast': dec_octets(ip_octets[0] + '.' + broadcast[i]),
+                'bin_broadcast': ip_octets[0] + '.' + broadcast[i]
+            })
+
+        if ip_class == 'B':
+            network[i] = network[i][:8] + '.' + network[i][8:].ljust(8, '0')
+            broadcast[i] = broadcast[i][:8] + \
+                '.' + broadcast[i][8:].ljust(8, '1')
+            subnets.append({
+                'number': subnet_number,
+                'dec_network': dec_octets(ip_octets[0] + '.' + ip_octets[1] + '.' + network[i]),
+                'bin_network': ip_octets[0] + '.' + ip_octets[1] + '.' + network[i],
+                'dec_broadcast': dec_octets(ip_octets[0] + '.' + ip_octets[1] + '.' + broadcast[i]),
+                'bin_broadcast': ip_octets[0] + '.' + ip_octets[1] + '.' + broadcast[i]
+            })
+
+        if ip_class == 'C':
+            subnets.append({
+                'number': subnet_number,
+                'dec_network': dec_octets(ip_octets[0] + '.' + ip_octets[1] + '.' + ip_octets[2] + '.' + network[i]),
+                'bin_network': ip_octets[0] + '.' + ip_octets[1] + '.' + ip_octets[2] + '.' + network[i],
+                'dec_broadcast': dec_octets(ip_octets[0] + '.' + ip_octets[1] + '.' + ip_octets[2] + '.' + broadcast[i]),
+                'bin_broadcast': ip_octets[0] + '.' + ip_octets[1] + '.' + ip_octets[2] + '.' + broadcast[i]
+            })
+
+        subnet_number += 1
+    return subnets
+
+
 data = {}
 
 
@@ -211,4 +274,7 @@ def result(request):
     data['new_dec_wildcard'] = dec_octets(data['new_bin_wildcard'])
     data['effective_subnets'] = effective_quantity(data['class'])
     data['effective_hosts'] = effective_quantity(data['class']) - 2
+    data['subnets'] = calculate_subnets(
+        data['bin_ip'], data['class'], data['cidr'])
+
     return render(request, 'result.html', data)

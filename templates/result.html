@@ -28,12 +28,12 @@
         <div class="subnets">
             <p>Subnets List</p>
             <p>Click in Download to generate a PDF file with the subnets.</p><br>
-            {% for s in subnets %}
-            Subnet: {{ s.number }}<br>
-            Network address in decimal: {{ s.network_dec }}<br>
-            Network address in binary: {{ s.network_bin }}<br>
-            Broadcast address in decimal: {{ s.broadcast_dec }}<br>
-            Broadcast address in binary: {{ s.broadcast_bin }}<br>
+            {% for subnet in subnets %}
+            Subnet: {{ subnet.number }}<br>
+            Decimal network address: {{ subnet.dec_network }}<br>
+            Binary network address: {{ subnet.bin_network }}<br>
+            Decimal broadcast address: {{ subnet.dec_broadcast }}<br>
+            Binary broadcast address: {{ subnet.bin_broadcast }}<br>
             <br>
             {% endfor %}
         </div>
