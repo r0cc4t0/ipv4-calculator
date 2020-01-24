@@ -162,6 +162,16 @@ def new_bin_wildcard(new_bin_mask):
     return new_bin_wildcard
 
 
+def effective_quantity(ip_class):
+    if ip_class == 'A':
+        effective_quantity = 8388608
+    elif ip_class == 'B':
+        effective_quantity = 32768
+    elif ip_class == 'C':
+        effective_quantity = 128
+    return effective_quantity
+
+
 data = {}
 
 
@@ -199,5 +209,6 @@ def result(request):
     data['cidr'] = cidr_notation(data['new_bin_mask'])
     data['new_bin_wildcard'] = new_bin_wildcard(data['new_bin_mask'])
     data['new_dec_wildcard'] = dec_octets(data['new_bin_wildcard'])
-
+    data['effective_subnets'] = effective_quantity(data['class'])
+    data['effective_hosts'] = effective_quantity(data['class']) - 2
     return render(request, 'result.html', data)
