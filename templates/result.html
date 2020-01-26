@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <form class="form_result" action="#" method="POST">
+    <form class="form_result" action="{% url 'generate_pdf' %}" method="POST">
         {% csrf_token %}
         <button type="submit" value="download" id="Download">Download</button>
     </form>

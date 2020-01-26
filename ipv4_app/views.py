@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from .forms import IndexForm
 from math import log, ceil
+from io import BytesIO
+from django.http import FileResponse
+from reportlab.pdfgen.canvas import Canvas
 
 # Create your views here.
 
@@ -278,3 +281,75 @@ def result(request):
         data['bin_ip'], data['class'], data['cidr'])
 
     return render(request, 'result.html', data)
+
+
+def generate_pdf(request):
+    buffer = BytesIO()
+    pdf = Canvas(buffer)
+    width = 595
+    height = 842
+    margin = 85
+
+    pdf.drawCentredString(width / 2, height - margin,
+                          'IPv4 Subnets Calculator')
+    pdf.drawString(margin, 672, 'Decimal IP Address: ' + data['ip'])
+    pdf.drawString(margin, 647, 'Chosen Option: ' + data['opt'])
+    pdf.drawString(margin, 622, 'Requested Quantity: {:d}'.format(data['qty']))
+    pdf.drawString(margin, 597, 'IP Class: ' + data['class'])
+    pdf.drawString(margin, 572, 'IP Type: ' + data['type'])
+    pdf.drawString(margin, 547, 'Binary IP Address: ' + data['bin_ip'])
+    pdf.drawString(
+        margin, 522, 'Decimal Default Subnet Mask: ' + data['dec_mask'])
+    pdf.drawString(
+        margin, 497, 'Binary Default Subnet Mask: ' + data['bin_mask'])
+    pdf.drawString(
+        margin, 472, 'Decimal Default Wildcard Mask: ' + data['dec_wildcard'])
+    pdf.drawString(
+        margin, 447, 'Binary Default Wildcard Mask: ' + data['bin_wildcard'])
+    pdf.drawString(margin, 422, 'Number of bits used for {}: {:d}'.format(
+        data['opt'], data['bits_opt']))
+    pdf.drawString(margin, 397, 'Valid number of {} with {:d} bits: {:d}'.format(
+        data['opt'], data['bits_opt'], data['qty_opt']))
+    pdf.drawString(margin, 372, 'Number of bits used for {}: {:d}'.format(
+        data['inv_opt'], data['bits_inv_opt']))
+    pdf.drawString(margin, 347, 'Valid number of {} with {:d} bits: {:d}'.format(
+        data['inv_opt'], data['bits_inv_opt'], data['qty_inv_opt']))
+    pdf.drawString(margin, 322, 'Binary New Subnet Mask: ' +
+                   data['new_bin_mask'])
+    pdf.drawString(margin, 297, 'Decimal New Subnet Mask: ' +
+                   data['new_dec_mask'])
+    pdf.drawString(margin, 272, 'CIDR Notation: /{:d}'.format(data['cidr']))
+    pdf.drawString(margin, 247, 'Binary New Wildcard Mask: ' +
+                   data['new_bin_wildcard'])
+    pdf.drawString(margin, 222, 'Decimal New Wildcard Mask: ' +
+                   data['new_dec_wildcard'])
+    pdf.drawString(margin, 197, 'Maximum subnets for class {}: {:d}'.format(
+        data['class'], data['effective_subnets']))
+    pdf.drawString(margin, 172, 'Maximum hosts per subnet for class {}: {:d}'.format(
+        data['class'], data['effective_hosts']))
+
+    pdf.showPage()
+
+    count = 0
+    y = height - margin
+    for i in range(len(data['subnets'])):
+        pdf.drawString(margin, y, 'Subnet: {}'.format(
+            data['subnets'][i]['number']))
+        pdf.drawString(
+            margin, y - 25, 'Decimal Network Address: {}'.format(data['subnets'][i]['dec_network']))
+        pdf.drawString(
+            margin, y - 50, 'Binary Network Address: {}'.format(data['subnets'][i]['bin_network']))
+        pdf.drawString(
+            margin, y - 75, 'Decimal Broadcast Address: {}'.format(data['subnets'][i]['dec_broadcast']))
+        pdf.drawString(
+            margin, y - 100, 'Binary Broadcast Address: {}'.format(data['subnets'][i]['bin_broadcast']))
+        count += 1
+        y -= 100 + margin
+        if count % 4 == 0:
+            pdf.showPage()
+            y = height - margin
+
+    pdf.save()
+
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename='ipv4.pdf')
