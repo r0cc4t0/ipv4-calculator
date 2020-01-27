@@ -141,3 +141,34 @@ p {
     border-right: 1px solid #000000;
     border-top: 1px solid #000000;
 }
+
+@media (min-width: 320px)  {
+    .info {
+        width: 100%;
+    }
+}
+@media (min-width: 481px)  {
+    .info {
+        width: 95%;
+    }
+}
+@media (min-width: 641px)  {
+    .info {
+        width: 90%;
+    }
+}
+@media (min-width: 961px)  {
+    .info {
+        width: 85%;
+    }
+}
+@media (min-width: 1025px) {
+    .info {
+        width: 80%;
+    }
+}
+@media (min-width: 1281px) {
+    .info {
+        width: 75%;
+    }
+}
