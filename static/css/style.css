@@ -80,6 +80,10 @@ input::placeholder, input::-webkit-input-placeholder {
     margin-top: 20px;
 }
 
+#download {
+    margin-bottom: 25px;
+}
+
 button {
     width: 90px;
     height: 38px;
