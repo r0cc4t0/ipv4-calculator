@@ -286,6 +286,7 @@ def result(request):
 def generate_pdf(request):
     buffer = BytesIO()
     pdf = Canvas(buffer)
+    pdf.setTitle('IPv4 Subnets Calculator')
     width = 595
     height = 842
     margin = 85
